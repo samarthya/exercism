@@ -1,43 +1,156 @@
 package linkedlist
 
+import (
+	"errors"
+	"log"
+)
+
+var ErrEmptyList = errors.New("no elements in the list")
+
 // Define List and Node types here.
+type Node struct {
+	Val            interface{}
+	next, previous *Node
+}
+
+type List struct {
+	Head, Tail *Node
+}
 
 func NewList(args ...interface{}) *List {
-	panic("Please implement the NewList function")
+	l := &List{}
+
+	for _, v := range args {
+		l.PushBack(v)
+	}
+
+	return l
 }
 
 func (n *Node) Next() *Node {
-	panic("Please implement the Next function")
+	return n.next
 }
 
 func (n *Node) Prev() *Node {
-	panic("Please implement the Prev function")
+	return n.previous
 }
 
 func (l *List) PushFront(v interface{}) {
-	panic("Please implement the PushFront function")
+	n := &Node{Val: v}
+
+	if l.Head == nil {
+		l.Tail = n
+	} else {
+		n.next = l.Head
+		l.Head.previous = n
+	}
+	l.Head = n
 }
 
 func (l *List) PushBack(v interface{}) {
-	panic("Please implement the PushBack function")
+	n := &Node{Val: v}
+
+	if l.Head == nil {
+		l.Head = n
+		n.previous = nil
+		n.next = nil
+		l.Tail = n
+		return
+	}
+
+	l.Tail.next = n
+	n.previous = l.Tail
+	l.Tail = n
 }
 
 func (l *List) PopFront() (interface{}, error) {
-	panic("Please implement the PopFront function")
+
+	if l.Head == nil {
+		return "", ErrEmptyList
+	}
+
+	m := l.Head
+
+	if m.next == nil {
+		l.Head = nil
+		l.Tail = nil
+
+	} else {
+		l.Head = m.next
+		l.Head.previous = nil
+	}
+
+	return m.Val, nil
 }
 
 func (l *List) PopBack() (interface{}, error) {
-	panic("Please implement the PopBack function")
+
+	if l.Tail == nil {
+		return "", ErrEmptyList
+	}
+
+	m := l.Tail
+	if m.previous == nil {
+		l.Head = nil
+		l.Tail = nil
+
+	} else {
+		l.Tail = m.previous
+		l.Tail.next = nil
+	}
+
+	return m.Val, nil
 }
 
 func (l *List) Reverse() {
-	panic("Please implement the Reverse function")
+	c := l.Head
+	for c != nil {
+		c.previous, c.next = c.next, c.previous
+		c = c.previous
+	}
+	l.Head, l.Tail = l.Tail, l.Head
+}
+
+func (l *List) Reverse2() {
+
+	// No element
+	if l.Head == l.Tail {
+		return
+	}
+
+	var p *Node
+	for N := l.First(); N != nil; N = N.previous {
+
+		// The next node
+		p = N.next
+
+		if N.previous == nil {
+			l.Tail = N
+			N.previous = p
+			N.next = nil
+		} else if p == nil {
+			l.Head = N
+			N.next = N.previous
+			N.previous = p
+		} else {
+			old := N.previous
+			N.previous = N.next
+			N.next = old
+		}
+
+	}
+}
+
+func (l *List) Display() {
+	for m := l.First(); m.next != nil; m = m.next {
+		log.Printf(" Element: %d\n", m.Val)
+	}
 }
 
 func (l *List) First() *Node {
-	panic("Please implement the First function")
+	return l.Head
 }
 
 func (l *List) Last() *Node {
-	panic("Please implement the Last function")
+	return l.Tail
 }
