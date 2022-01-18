@@ -6,25 +6,37 @@ import (
 	"strings"
 )
 
+// Entry defines the journal entry
 type Entry struct {
 	Date        string // "Y-m-d"
-	Description string
-	Change      int // in cents
+	Description string // Description of the entry
+	Change      int    // in cents
 }
 
+var Currencies = map[string]rune{
+	"EUR": '€',
+	"USD": '$',
+}
+
+// FormatLedger format the ledger entry
 func FormatLedger(currency string, locale string, entries []Entry) (string, error) {
 	var entriesCopy []Entry
+
 	for _, e := range entries {
 		entriesCopy = append(entriesCopy, e)
 	}
+
 	if len(entries) == 0 {
 		if _, err := FormatLedger(currency, "en-US", []Entry{{Date: "2014-01-01", Description: "", Change: 0}}); err != nil {
 			return "", err
 		}
 	}
+
 	m1 := map[bool]int{true: 0, false: 1}
 	m2 := map[bool]int{true: -1, false: 1}
+
 	es := entriesCopy
+
 	for len(es) > 1 {
 		first, rest := es[0], es[1:]
 		success := false
@@ -66,6 +78,7 @@ func FormatLedger(currency string, locale string, entries []Entry) (string, erro
 		s string
 		e error
 	})
+
 	for i, et := range entriesCopy {
 		go func(i int, entry Entry) {
 			if len(entry.Date) != 10 {
