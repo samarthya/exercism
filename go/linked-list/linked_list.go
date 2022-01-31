@@ -111,36 +111,6 @@ func (l *List) Reverse() {
 	l.Head, l.Tail = l.Tail, l.Head
 }
 
-func (l *List) Reverse2() {
-
-	// No element
-	if l.Head == l.Tail {
-		return
-	}
-
-	var p *Node
-	for N := l.First(); N != nil; N = N.previous {
-
-		// The next node
-		p = N.next
-
-		if N.previous == nil {
-			l.Tail = N
-			N.previous = p
-			N.next = nil
-		} else if p == nil {
-			l.Head = N
-			N.next = N.previous
-			N.previous = p
-		} else {
-			old := N.previous
-			N.previous = N.next
-			N.next = old
-		}
-
-	}
-}
-
 func (l *List) Display() {
 	for m := l.First(); m.next != nil; m = m.next {
 		log.Printf(" Element: %d\n", m.Val)
